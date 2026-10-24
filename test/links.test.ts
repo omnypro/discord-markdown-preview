@@ -39,6 +39,11 @@ describe('links that do not unfurl', () => {
     expect(unfurling('[t](<https://altair.tv>)')).toEqual([]);
   });
 
+  test('a masked link whose target is not http or https', () => {
+    expect(unfurling('[x](javascript:alert(1))')).toEqual([]);
+    expect(unfurling('[x](ftp://a.com)')).toEqual([]);
+  });
+
   test('a link inside inline code', () => {
     expect(unfurling('`https://x.com`')).toEqual([]);
   });

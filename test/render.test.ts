@@ -39,7 +39,20 @@ describe('headings and text styles', () => {
 
   test('lists', () => {
     expect(render('- a\n- b')).toContain('<ul class="md-list">');
-    expect(render('1. a\n2. b')).toContain('<ol class="md-list">');
+    expect(render('1. a\n2. b')).toContain('<ol class="md-list"');
+  });
+
+  test('an ordered list that starts at 1 has no start attribute', () => {
+    expect(render('1. a\n2. b')).not.toContain('start=');
+  });
+
+  test('an ordered list keeps the number it starts at', () => {
+    expect(render('3. a\n4. b')).toContain('start="3"');
+  });
+
+  test('an ordered list reports the width of its largest number', () => {
+    expect(render('9. a\n10. b')).toContain('--total-characters:2');
+    expect(render('1. a\n2. b')).toContain('--total-characters:1');
   });
 });
 
@@ -57,6 +70,12 @@ describe('mentions', () => {
 
   test('a typed name stays plain text', () => {
     expect(render('@someone')).not.toContain('md-mention');
+  });
+
+  test('a guild navigation token is a pill with its label', () => {
+    const html = render('<838122095404687360:customize>');
+    expect(html).toContain('md-mention');
+    expect(html).toContain('Channels &amp; Roles');
   });
 });
 

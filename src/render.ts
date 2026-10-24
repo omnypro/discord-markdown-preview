@@ -1,4 +1,4 @@
-import { isUnfurling } from './links';
+import { isSafeUrl, isUnfurling } from './links';
 import type { Node } from './parse';
 
 export type RenderOptions = { now?: Date; timeZone?: string };
@@ -25,17 +25,20 @@ const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ['second', 1],
 ];
 
-function escapeHtml(text: string): string {
+const GUILD_NAVIGATION_LABELS: Record<string, string> = {
+  customize: 'Channels & Roles',
+  browse: 'Browse Channels',
+  guide: 'Server Guide',
+  'linked-roles': 'Linked Roles',
+};
+
+export function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-function isSafeUrl(target: string): boolean {
-  return /^https?:\/\//i.test(target.trim());
 }
 
 function formatRelative(date: Date, now: Date): string {
@@ -117,9 +120,13 @@ function renderNode(node: Node, context: Context): string {
       return `<blockquote class="md-quote">${renderNodes(trimmed, context)}</blockquote>`;
     }
     case 'list': {
-      const tag = node.ordered ? 'ol' : 'ul';
-      const items = (node.items as Node[][]).map((item) => `<li>${renderNodes(item, context)}</li>`);
-      return `<${tag} class="md-list">${items.join('')}</${tag}>`;
+      const items = (node.items as Node[][]).map((item) => `<li>${renderNodes(item, context)}</li>`).join('');
+      if (!node.ordered) return `<ul class="md-list">${items}</ul>`;
+
+      const start: number = node.start ?? 1;
+      const startAttribute = start === 1 ? '' : ` start="${start}"`;
+      const width = String(start + node.items.length - 1).length;
+      return `<ol class="md-list"${startAttribute} style="--total-characters:${width}">${items}</ol>`;
     }
     case 'url':
     case 'autolink':
@@ -135,6 +142,8 @@ function renderNode(node: Node, context: Context): string {
       return '<span class="md-mention">@role</span>';
     case 'channel':
       return '<span class="md-mention">#channel</span>';
+    case 'guildNavigation':
+      return `<span class="md-mention">${escapeHtml(GUILD_NAVIGATION_LABELS[node.navigation] ?? node.navigation)}</span>`;
     case 'slashCommand':
       return `<span class="md-mention">/${escapeHtml(node.fullName)}</span>`;
     case 'emoji': {

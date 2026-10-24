@@ -22,8 +22,10 @@ const list: Rule = {
     /^$|\n *$/.test(prevCapture) ? LIST_REGEX.exec(source) : null,
   parse: (capture, nestedParse, state) => {
     const lines = capture[1].split('\n');
+    const ordered = /^ *\d/.test(lines[0]);
     return {
-      ordered: /^ *\d/.test(lines[0]),
+      ordered,
+      start: ordered ? Number.parseInt(lines[0], 10) : undefined,
       items: lines.map((line) => nestedParse(line.replace(LIST_MARKER_REGEX, ''), state)),
     };
   },

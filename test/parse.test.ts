@@ -43,6 +43,14 @@ describe('lists', () => {
     expect(nodes[0].ordered).toBe(true);
     expect(nodes[0].items).toHaveLength(2);
   });
+
+  test('an ordered list keeps the number it starts at', () => {
+    expect(parseDraft('3. a\n4. b')[0].start).toBe(3);
+  });
+
+  test('an unordered list has no start number', () => {
+    expect(parseDraft('- a')[0].start).toBeUndefined();
+  });
 });
 
 describe('blocks directly after a list', () => {

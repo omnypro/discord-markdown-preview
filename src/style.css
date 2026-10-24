@@ -1,3 +1,6 @@
+@import '@fontsource-variable/noto-sans/wght.css';
+@import '@fontsource-variable/source-code-pro/wght.css';
+
 :root {
   --bg-primary: #222327;
   --bg-secondary: #202024;
@@ -19,8 +22,8 @@
   --code-border: rgba(151, 151, 159, 0.2);
   --spoiler-hidden: #666770;
   --spoiler-revealed: rgba(151, 151, 159, 0.12);
-  --font-body: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-code: 'gg mono', 'Source Code Pro', Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', Monaco, 'Courier New', monospace;
+  --font-body: 'gg sans', 'Noto Sans Variable', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-code: 'gg mono', 'Source Code Pro Variable', 'Source Code Pro', Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', monospace;
   --size-body: 1rem;
   --size-h1: 1.5rem;
   --size-h2: 1.25rem;
@@ -42,6 +45,7 @@ body {
   font-family: var(--font-body);
   font-size: var(--size-body);
   line-height: var(--line-height-body);
+  text-rendering: optimizeLegibility;
 }
 
 #app {

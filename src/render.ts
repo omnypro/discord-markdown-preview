@@ -66,6 +66,10 @@ function renderTimestamp(node: Node, context: Context): string {
   return `<span class="md-timestamp">${escapeHtml(text)}</span>`;
 }
 
+function withTrailingSlash(url: string): string {
+  return /^https?:\/\/[^/?#]+$/i.test(url) ? `${url}/` : url;
+}
+
 function renderLinkLabel(node: Node, context: Context): string {
   return node.type === 'maskedLink' ? renderNodes(node.content, context) : escapeHtml(node.target);
 }
@@ -85,7 +89,7 @@ function renderLink(node: Node, context: Context): string {
     return escapeHtml(node.type === 'autolink' ? `<${target}>` : target);
   }
 
-  const label = renderLinkLabel(node, labelContext);
+  const label = node.type === 'url' ? escapeHtml(withTrailingSlash(target)) : renderLinkLabel(node, labelContext);
   const classes = unfurls ? 'md-link md-link--unfurl' : 'md-link';
   return `<a class="${classes}" href="${escapeHtml(target)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }

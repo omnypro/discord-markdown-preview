@@ -84,6 +84,14 @@ describe('links', () => {
     expect(render('https://x.com')).toContain('md-link--unfurl');
   });
 
+  test('a bare link with no path shows the trailing slash Discord adds', () => {
+    expect(render('https://example.com')).toContain('>https://example.com/</a>');
+  });
+
+  test('a bare link with a path is shown as typed', () => {
+    expect(render('https://example.com/docs')).toContain('>https://example.com/docs</a>');
+  });
+
   test('an angle-bracketed link is a link that does not unfurl', () => {
     const html = render('<https://x.com>');
     expect(html).toContain('md-link');

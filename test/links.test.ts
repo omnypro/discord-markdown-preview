@@ -25,6 +25,14 @@ describe('links that unfurl', () => {
     expect(unfurling('https://a.com and https://b.com')).toEqual(['https://a.com', 'https://b.com']);
   });
 
+  test('the same URL twice gives one entry, as Discord makes one embed', () => {
+    expect(unfurling('https://avalonstar.com\nhttps://avalonstar.com')).toEqual(['https://avalonstar.com']);
+  });
+
+  test('the same URL as a bare link and a masked link gives one entry', () => {
+    expect(unfurling('https://a.com and [t](https://a.com)')).toEqual(['https://a.com']);
+  });
+
   test('a masked link whose label is a URL counts only its target', () => {
     expect(unfurling('[https://a.com](https://b.com)')).toEqual(['https://b.com']);
   });

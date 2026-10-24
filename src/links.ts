@@ -23,5 +23,5 @@ export function findUnfurlingLinks(nodes: Node[]): string[] {
     }
   }
 
-  return found;
+  return [...new Set(found)];
 }

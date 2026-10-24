@@ -29,6 +29,14 @@ describe('links that unfurl', () => {
     expect(unfurling('https://avalonstar.com\nhttps://avalonstar.com')).toEqual(['https://avalonstar.com']);
   });
 
+  test('the same URL with and without a trailing slash gives one entry', () => {
+    expect(unfurling('https://avalonstar.com\nhttps://avalonstar.com/')).toEqual(['https://avalonstar.com']);
+  });
+
+  test('two different paths on one site stay two entries', () => {
+    expect(unfurling('https://a.com/x https://a.com/y')).toEqual(['https://a.com/x', 'https://a.com/y']);
+  });
+
   test('the same URL as a bare link and a masked link gives one entry', () => {
     expect(unfurling('https://a.com and [t](https://a.com)')).toEqual(['https://a.com']);
   });

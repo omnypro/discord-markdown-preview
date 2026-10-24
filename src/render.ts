@@ -1,4 +1,4 @@
-import { isSafeUrl, isUnfurling } from './links';
+import { isSafeUrl, isUnfurling, withTrailingSlash } from './links';
 import type { Node } from './parse';
 
 export type RenderOptions = { now?: Date; timeZone?: string };
@@ -64,10 +64,6 @@ function renderTimestamp(node: Node, context: Context): string {
         }).format(date);
 
   return `<span class="md-timestamp">${escapeHtml(text)}</span>`;
-}
-
-function withTrailingSlash(url: string): string {
-  return /^https?:\/\/[^/?#]+$/i.test(url) ? `${url}/` : url;
 }
 
 function renderLinkLabel(node: Node, context: Context): string {

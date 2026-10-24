@@ -1,28 +1,34 @@
 :root {
-  --bg-primary: #313338;
-  --bg-secondary: #2b2d31;
-  --bg-tertiary: #1e1f22;
-  --bg-input: #383a40;
-  --text-normal: #dbdee1;
-  --text-strong: #f2f3f5;
-  --text-muted: #949ba4;
-  --text-link: #00a8fc;
-  --text-danger: #f23f42;
+  --bg-primary: #222327;
+  --bg-secondary: #202024;
+  --bg-tertiary: #121214;
+  --bg-input: #242429;
+  --text-normal: #efeff1;
+  --text-strong: #fbfbfb;
+  --text-subtle: #abacb2;
+  --text-muted: #96979e;
+  --text-link: #4d96ee;
+  --text-danger: #da3e44;
   --unfurl-marker: #f0b232;
-  --mention-bg: rgba(88, 101, 242, 0.3);
-  --mention-text: #c9cdfb;
+  --mention-bg: rgba(88, 101, 242, 0.239);
+  --mention-text: #a9bbff;
   --mention-bg-hover: #5865f2;
-  --timestamp-bg: rgba(78, 80, 88, 0.6);
-  --quote-bar: #4e5058;
+  --timestamp-bg: rgba(151, 151, 159, 0.16);
+  --quote-bar: #474851;
+  --code-bg: rgba(88, 101, 242, 0.078);
+  --code-border: rgba(151, 151, 159, 0.2);
+  --spoiler-hidden: #666770;
+  --spoiler-revealed: rgba(151, 151, 159, 0.12);
   --font-body: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-code: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Courier New', monospace;
+  --font-code: 'gg mono', 'Source Code Pro', Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', Monaco, 'Courier New', monospace;
   --size-body: 1rem;
   --size-h1: 1.5rem;
   --size-h2: 1.25rem;
-  --size-h3: 1.125rem;
-  --size-subtext: 0.75rem;
+  --size-h3: 1rem;
+  --size-subtext: 0.875rem;
   --size-code: 0.875rem;
   --line-height-body: 1.375;
+  --line-height-subtext: 1.20313rem;
 }
 
 * {
@@ -136,6 +142,17 @@ body {
   font-family: var(--font-code);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .md-h1,
 .md-h2,
 .md-h3 {
@@ -157,64 +174,104 @@ body {
   font-size: var(--size-h3);
 }
 
-.message > :first-child {
-  margin-top: 0;
+.message > .md-h1:first-child,
+.message > .md-h2:first-child {
+  margin-top: 8px;
+}
+
+.message > .md-h3:first-child {
+  margin-top: 4px;
 }
 
 .md-subtext {
-  color: var(--text-muted);
+  color: var(--text-subtle);
   font-size: var(--size-subtext);
+  line-height: var(--line-height-subtext);
 }
 
 .md-quote {
-  margin: 0;
+  box-sizing: border-box;
+  max-width: 90%;
+  margin: 4px 0;
   padding: 0 8px 0 12px;
   border-left: 4px solid var(--quote-bar);
   border-radius: 4px;
+  color: var(--text-subtle);
 }
 
 .md-list {
-  margin: 4px 0;
-  padding-left: 1.5em;
+  margin: 4px 0 0 16px;
+  padding: 0;
   white-space: normal;
 }
 
-.md-code-inline,
-.md-code-block {
-  border: 1px solid var(--bg-tertiary);
-  border-radius: 4px;
-  background: var(--bg-secondary);
-  font-family: var(--font-code);
-  font-size: var(--size-code);
+ul.md-list {
+  list-style: disc;
+}
+
+ol.md-list {
+  margin-inline-start: calc(0.4em + var(--total-characters, 1) * 0.6em);
+  list-style: decimal;
+}
+
+.md-list li {
+  margin-bottom: 4px;
+  white-space: break-spaces;
+}
+
+.md-list li::marker {
+  color: var(--text-normal);
 }
 
 .md-code-inline {
-  padding: 0.2em;
+  margin: -0.2em 0;
+  padding: 0 0.2em;
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-family: var(--font-code);
+  font-size: 85%;
+  line-height: 1.125rem;
 }
 
 .md-code-block {
+  box-sizing: border-box;
+  max-width: 90%;
   margin: 6px 0 0;
-  padding: 7px;
+  padding: 0;
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  line-height: 1rem;
   white-space: pre-wrap;
 }
 
 .md-code-block code {
-  font: inherit;
+  display: block;
+  padding: 0.5em;
+  overflow-x: auto;
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-size: var(--size-code);
+  line-height: 1.125rem;
 }
 
 .md-spoiler {
   border-radius: 3px;
-  background: var(--bg-tertiary);
+  background: var(--spoiler-hidden);
   cursor: pointer;
+  transition: background-color 0.2s;
+  box-decoration-break: clone;
 }
 
 .md-spoiler:not(.is-revealed) .md-spoiler-content {
-  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .md-spoiler.is-revealed {
-  background: rgba(255, 255, 255, 0.1);
-  cursor: default;
+  background: var(--spoiler-revealed);
+  cursor: auto;
 }
 
 .md-mention {

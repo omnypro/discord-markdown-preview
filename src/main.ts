@@ -1,8 +1,6 @@
 import './style.css';
 import { LIMITS, countCharacters } from './counter';
-import { findUnfurlingLinks } from './links';
-import { parseDraft } from './parse';
-import { renderHtml } from './render';
+import { processDraft } from './draft';
 import { DRAFT_KEY, LIMIT_KEY, readStored, writeStored } from './storage';
 
 function byId<T extends HTMLElement>(id: string): T {
@@ -14,21 +12,30 @@ function byId<T extends HTMLElement>(id: string): T {
 const draft = byId<HTMLTextAreaElement>('draft');
 const limitToggle = byId<HTMLInputElement>('limit-toggle');
 const counter = byId('counter');
+const limitStatus = byId('limit-status');
 const preview = byId('preview');
 const unfurlCount = byId('unfurl-count');
 
-function update(): void {
-  const nodes = parseDraft(draft.value);
-  preview.innerHTML = renderHtml(nodes);
+let wasOver = false;
 
-  const links = findUnfurlingLinks(nodes).length;
+function update(): void {
+  const { html, unfurlLinks } = processDraft(draft.value);
+  preview.innerHTML = html;
+
+  const links = unfurlLinks.length;
   unfurlCount.textContent =
     links === 0 ? 'No links will unfurl in this message.' : `${links} ${links === 1 ? 'link' : 'links'} will unfurl in this message.`;
 
   const limit = limitToggle.checked ? LIMITS.nitro : LIMITS.standard;
   const count = countCharacters(draft.value);
+  const over = count > limit;
   counter.textContent = `${count} / ${limit}`;
-  counter.classList.toggle('is-over', count > limit);
+  counter.classList.toggle('is-over', over);
+
+  if (over !== wasOver) {
+    limitStatus.textContent = over ? 'Over the character limit.' : '';
+    wasOver = over;
+  }
 }
 
 draft.addEventListener('input', () => {
@@ -43,7 +50,7 @@ limitToggle.addEventListener('change', () => {
 
 preview.addEventListener('click', (event) => {
   const spoiler = (event.target as HTMLElement).closest('.md-spoiler');
-  if (spoiler) spoiler.classList.toggle('is-revealed');
+  if (spoiler) spoiler.classList.add('is-revealed');
 });
 
 draft.value = readStored(DRAFT_KEY) ?? '';

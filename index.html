@@ -7,8 +7,26 @@
   </head>
   <body>
     <main id="app">
-      <section id="draft-pane"></section>
-      <section id="preview-pane"></section>
+      <section id="draft-pane" class="pane">
+        <h1 class="pane-title">Draft</h1>
+        <textarea id="draft" spellcheck="true" placeholder="Paste or type your Discord message here."></textarea>
+        <div class="draft-footer">
+          <label class="limit-toggle">
+            <input id="limit-toggle" type="checkbox" />
+            Nitro limit
+          </label>
+          <span id="counter" aria-live="polite"></span>
+        </div>
+      </section>
+      <section id="preview-pane" class="pane">
+        <h1 class="pane-title">Preview</h1>
+        <div id="preview" class="message"></div>
+        <div id="legend" class="legend">
+          <p><span class="md-link md-link--unfurl">Dotted underline</span> marks a link that will unfurl into an embed card.</p>
+          <p>Wrap a link in <code>&lt; &gt;</code> to suppress the embed.</p>
+          <p id="unfurl-count"></p>
+        </div>
+      </section>
     </main>
     <script type="module" src="./src/main.ts"></script>
   </body>

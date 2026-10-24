@@ -10,8 +10,12 @@ describe('countCharacters', () => {
     expect(countCharacters('abc')).toBe(3);
   });
 
-  test('an emoji outside the basic plane counts as one', () => {
-    expect(countCharacters('a😀b')).toBe(3);
+  test('an emoji outside the basic plane counts as two, as Discord counts it', () => {
+    expect(countCharacters('a😀b')).toBe(4);
+  });
+
+  test('a thousand and one such emoji are over the standard limit', () => {
+    expect(countCharacters('😀'.repeat(1001))).toBeGreaterThan(LIMITS.standard);
   });
 
   test('a newline counts as one', () => {

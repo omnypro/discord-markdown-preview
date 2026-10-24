@@ -9,7 +9,15 @@ describe('processDraft', () => {
   });
 
   test('an empty draft renders nothing', () => {
-    expect(processDraft('')).toEqual({ html: '', unfurlLinks: [] });
+    expect(processDraft('')).toEqual({ html: '', unfurlLinks: [], mentions: [] });
+  });
+
+  test('typed mentions are reported', () => {
+    const result = processDraft('hi @dayvemsee, and @someone ok');
+    expect(result.mentions.map((mention) => [mention.text, mention.converts])).toEqual([
+      ['@dayvemsee,', false],
+      ['@someone', true],
+    ]);
   });
 
   test('input that makes the parser throw falls back to the escaped draft', () => {
@@ -17,5 +25,6 @@ describe('processDraft', () => {
     const result = processDraft(draft);
     expect(result.html).toBe(draft);
     expect(result.unfurlLinks).toEqual([]);
+    expect(result.mentions).toEqual([]);
   });
 });

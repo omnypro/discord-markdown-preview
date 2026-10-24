@@ -139,6 +139,11 @@ body {
   color: var(--text-normal);
 }
 
+.legend #mention-notes p {
+  margin-bottom: 4px;
+  color: var(--text-normal);
+}
+
 .legend code {
   padding: 0 4px;
   border-radius: 3px;

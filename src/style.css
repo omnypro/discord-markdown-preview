@@ -205,13 +205,15 @@ body {
 .md-spoiler {
   border-radius: 3px;
   background: var(--bg-tertiary);
-  color: transparent;
   cursor: pointer;
+}
+
+.md-spoiler:not(.is-revealed) .md-spoiler-content {
+  visibility: hidden;
 }
 
 .md-spoiler.is-revealed {
   background: rgba(255, 255, 255, 0.1);
-  color: inherit;
   cursor: default;
 }
 

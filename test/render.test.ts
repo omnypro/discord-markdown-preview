@@ -28,6 +28,11 @@ describe('headings and text styles', () => {
     expect(render('||secret||')).toContain('class="md-spoiler"');
   });
 
+  test('spoiler content sits in its own wrapper so hiding it hides styled children', () => {
+    const html = render('||https://x.com||');
+    expect(html).toMatch(/<span class="md-spoiler"><span class="md-spoiler-content">.*<a .*<\/a><\/span><\/span>/);
+  });
+
   test('a block quote', () => {
     expect(render('> quoted')).toContain('class="md-quote"');
   });
@@ -77,6 +82,18 @@ describe('links', () => {
     expect(html).toContain('this thread');
     expect(html).toContain('href="https://x.com/a?b=1&amp;c=2"');
     expect(html).toContain('md-link--unfurl');
+  });
+
+  test('a URL used as a masked link label is text, not a second link', () => {
+    const html = render('[https://a.com](<https://a.com>)');
+    expect(html.match(/<a /g)).toHaveLength(1);
+    expect(html).not.toContain('md-link--unfurl');
+  });
+
+  test('a URL label on an unsuppressed masked link links to the target only', () => {
+    const html = render('[https://a.com](https://b.com)');
+    expect(html.match(/<a /g)).toHaveLength(1);
+    expect(html).toContain('href="https://b.com"');
   });
 
   test('a javascript: masked link has no href and keeps its label', () => {

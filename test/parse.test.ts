@@ -45,6 +45,28 @@ describe('lists', () => {
   });
 });
 
+describe('blocks directly after a list', () => {
+  test('a heading on the line after a list is a heading', () => {
+    const nodes = parseDraft('- a\n- b\n### Heading');
+    expect(nodes.map((node) => node.type)).toEqual(['list', 'heading']);
+    expect(nodes[1].level).toBe(3);
+  });
+
+  test('subtext on the line after a list is subtext', () => {
+    const nodes = parseDraft('- a\n-# note');
+    expect(nodes.map((node) => node.type)).toEqual(['list', 'subtext']);
+  });
+
+  test('a heading on the line after a block quote is a heading', () => {
+    const nodes = parseDraft('> q\n### Heading');
+    expect(nodes.map((node) => node.type)).toEqual(['blockQuote', 'heading']);
+  });
+
+  test('a hash run in the middle of a line is not a heading', () => {
+    expect(parseDraft('a ### b').some((node) => node.type === 'heading')).toBe(false);
+  });
+});
+
 describe('what the library already parses', () => {
   test('a level-three heading', () => {
     const nodes = parseDraft('### H3');

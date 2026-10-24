@@ -3,7 +3,7 @@ import type { Node } from './parse';
 
 export type RenderOptions = { now?: Date; timeZone?: string };
 
-type Context = { now: Date; timeZone?: string };
+type Context = { now: Date; timeZone?: string; inLink?: boolean };
 
 const EMOJI_SIZE = 48;
 
@@ -63,19 +63,26 @@ function renderTimestamp(node: Node, context: Context): string {
   return `<span class="md-timestamp">${escapeHtml(text)}</span>`;
 }
 
+function renderLinkLabel(node: Node, context: Context): string {
+  return node.type === 'maskedLink' ? renderNodes(node.content, context) : escapeHtml(node.target);
+}
+
 function renderLink(node: Node, context: Context): string {
+  if (context.inLink) return renderLinkLabel(node, context);
+
   const target: string = node.target;
   const unfurls = isUnfurling(node);
+  const labelContext = { ...context, inLink: true };
 
   if (!isSafeUrl(target)) {
     if (node.type === 'maskedLink') {
       const wrapped = node.suppressed ? `&lt;${escapeHtml(target)}&gt;` : escapeHtml(target);
-      return `[${renderNodes(node.content, context)}](${wrapped})`;
+      return `[${renderNodes(node.content, labelContext)}](${wrapped})`;
     }
     return escapeHtml(node.type === 'autolink' ? `<${target}>` : target);
   }
 
-  const label = node.type === 'maskedLink' ? renderNodes(node.content, context) : escapeHtml(target);
+  const label = renderLinkLabel(node, labelContext);
   const classes = unfurls ? 'md-link md-link--unfurl' : 'md-link';
   return `<a class="${classes}" href="${escapeHtml(target)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }
@@ -95,7 +102,7 @@ function renderNode(node: Node, context: Context): string {
     case 'strikethrough':
       return `<s>${renderNodes(node.content, context)}</s>`;
     case 'spoiler':
-      return `<span class="md-spoiler">${renderNodes(node.content, context)}</span>`;
+      return `<span class="md-spoiler"><span class="md-spoiler-content">${renderNodes(node.content, context)}</span></span>`;
     case 'inlineCode':
       return `<code class="md-code-inline">${escapeHtml(node.content)}</code>`;
     case 'codeBlock':

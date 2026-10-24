@@ -29,7 +29,19 @@ const list: Rule = {
   },
 };
 
-const parser = SimpleMarkdown.parserFor({ ...rules, maskedLink, list });
+const atLineStart = (rule: Rule): Rule => ({
+  ...rule,
+  match: (source, state, prevCapture) =>
+    /^$|\n$/.test(prevCapture) ? rule.match(source, { ...state, prevCapture: null }, prevCapture) : null,
+});
+
+const parser = SimpleMarkdown.parserFor({
+  ...rules,
+  heading: atLineStart(rules.heading),
+  subtext: atLineStart(rules.subtext),
+  maskedLink,
+  list,
+});
 
 export function parseDraft(text: string): Node[] {
   return parser(text, { inline: true });
